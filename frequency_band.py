@@ -3,13 +3,16 @@ import pandas as pd
 
 
 class Frequency_band:
-    def __init__(self, band_name):
+    def __init__(self, band_name, band_value):
         self.band_name = band_name
+        self.band_value = band_value
         self.band_range = self.get_band_range(band_name)
-        self.band_values =  None
         
     def get_band_name(self):
         return self.band_name
+    
+    def get_band_value(self):
+        return self.band_value
     
     def get_band_range(self, band_name):
         if band_name == 'delta':

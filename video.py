@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from window import *
+from channel import *
 
 
 class Video:
@@ -8,10 +8,8 @@ class Video:
         self.video_num = video_num
         self.data = video_data # 2D pandas dataframe
         self.label = video_label # 1D pandas dataframe
-        self.windows = {}
-        
-    def add_window(self, window_num):
-        self.windows[window_num] = Window(window_num)
+        self.channels = {}
+        self.build_channels()
         
     def get_video_num(self):
         return self.video_num
@@ -25,6 +23,12 @@ class Video:
     def get_label(self):
         return self.label
     
-    def get_windows(self):
-        return self.windows
+    def get_channel(self, channel_num):
+        return self.channels[channel_num]
     
+    def get_channels(self):
+        return self.channels
+    
+    def build_channels(self):
+        for i in range(self.data.shape[1]):
+            self.channels[i] = Channel(i, self.data.iloc[:, i])
