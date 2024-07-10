@@ -54,3 +54,11 @@ class Person:
             video_data = video_data.iloc[:, columns_to_keep]
             video_label = pd.DataFrame(self.labels[i]) # 1D pandas dataframe
             self.add_video(i, video_data, video_label)
+            
+    def create_windows_for_videos(self):
+        # Create windows to all videos for all the channels - one person
+        for video_index in range(len(self.get_videos())):
+            video_num = self.get_video(video_index)
+            for index in range(14):
+                channel_num = video_num.get_channel(index)  # person 1 video 0 channel index
+                channel_num.create_windows()
