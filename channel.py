@@ -35,16 +35,17 @@ class Channel:
         fft_output =  np.fft.fft(window_data)
         fft_magnitude = np.abs(fft_output)
         fft_magnitude = fft_magnitude[0:len(fft_magnitude) // 2]  # Keep only the positive frequencies within the range from 0 to the Nyquist frequency
-        return pd.DataFrame(fft_magnitude)
+        power_spectrum = np.square(fft_magnitude) # Calculate the power spectrum by squaring the magnitudes of the frequency components. This gives the power (energy) of each frequency component in the signal.
+        return pd.DataFrame(power_spectrum)
     
     def create_windows(self):
         step_size = 0.125 # seconds
         window_size = 256 # samples (128 Hz * 2 seconds)
-        window_jump = int(window_size * step_size) # 32 samples
+        window_jump = int(window_size * step_size // 2) # 16 samples
         index = 0
         for i in range(0, len(self.data) - window_size + 1, window_jump):
             window_data = self.data.iloc[i : i + window_size]
-            window_freq_data = self.perform_fft(window_data)  # Perform FFT on the window data , here window_freq_data size is 128 samples in frequencey domain
-            self.windows[index] = Window(index, window_freq_data)
+            window_power_data = self.perform_fft(window_data)  # Perform FFT on the window data and get the power , here window_freq_data size is 128 samples in frequencey domain
+            self.windows[index] = Window(index, window_power_data)
             index += 1
             

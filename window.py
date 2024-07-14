@@ -4,7 +4,7 @@ import pandas as pd
 class Window:
     def __init__(self, window_num, window_data):
         self.window_num = window_num
-        self.window_data = window_data  # 1D pandas dataframe , fft magnitude values of the window (only positive frequencies)
+        self.window_data = window_data  # 1D pandas dataframe , fft power values of the window (only positive frequencies)
         self.frequency_bands = {'delta': 0, 'theta': 0, 'alpha': 0, 'beta': 0, 'gamma': 0}
         self.frequency_bands_values = np.array([])
         self.freq_range = {'delta': (1, 3), 'theta': (4, 7), 'alpha': (8, 13), 'beta': (14, 30), 'gamma': (31, 50)}
@@ -17,10 +17,10 @@ class Window:
         return self.frequency_bands
     
     def get_frequency_bands_values(self) -> np.array:
-        return self.frequency_bands_values
+        return self.frequency_bands_values  # 1D numpy array , fft power values of the window (only positive frequencies)
     
     def get_window_data(self) -> pd.DataFrame:
-        return self.window_data  # 1D pandas dataframe , fft magnitude values of the window (only positive frequencies)
+        return self.window_data  # 1D pandas dataframe , fft power values of the window (only positive frequencies)
     
     def add_frequency_band(self, band_name, band_value):
         assert band_name in self.freq_range, "Invalid frequency band name"
@@ -37,13 +37,13 @@ class Window:
         self.frequency_bands = {band: 0 for band in self.freq_range}
         self.frequency_bands_values = np.array([])
 
-        # Aggregate magnitudes in each band
+        # Aggregate powers in each band
         for band, (low, high) in self.freq_range.items():
             band_indices = np.where((fft_freqs >= low) & (fft_freqs <= high))
-            band_magnitudes = self.window_data.iloc[band_indices].values
-            magnitude_sum = np.sum(band_magnitudes)
-            self.frequency_bands[band] = magnitude_sum
-            self.frequency_bands_values = np.append(self.frequency_bands_values, magnitude_sum)
+            band_power_spectrum = self.window_data.iloc[band_indices].values
+            band_power_sum = np.sum(band_power_spectrum)
+            self.frequency_bands[band] = band_power_sum
+            self.frequency_bands_values = np.append(self.frequency_bands_values, band_power_sum)
         
     def get_frequency_band(self, band_name) -> float:
         return self.frequency_bands[band_name]
